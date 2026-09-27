@@ -1,0 +1,63 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: noctua-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: noctua
+      POSTGRES_USER: noctua
+      POSTGRES_PASSWORD: noctua
+      # Aplica 01-schema.sql e 02-seed.sql apenas na primeira inicializacao
+      # do volume.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+      TZ: America/Sao_Paulo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Scripts de inicializacao executados em ordem alfabetica
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U noctua -d noctua"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - noctua-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: noctua-backend:local
+    container_name: noctua-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        # O HikariCP so conecta quando o Postgres esta realmente pronto
+        # para aceitar conexoes, nao apenas quando o container subiu.
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/noctua
+      SPRING_DATASOURCE_USERNAME: noctua
+      SPRING_DATASOURCE_PASSWORD: noctua
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      NOCTUA_DB_MAX_POOL_SIZE: "10"
+      NOCTUA_JWT_SECRET: "bWVzYS1jaG2dmYS1uby1jdHUtYS1zZWNyZXRhLWRlLW5vY3R1YS1kZWZhdWx0LWRlLXBsb2c"
+      NOCTUA_JWT_EXPIRATION_MINUTES: "720"
+      NOCTUA_CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:3000"
+      TZ: America/Sao_Paulo
+    networks:
+      - noctua-net
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  noctua-net:
+    driver: bridge

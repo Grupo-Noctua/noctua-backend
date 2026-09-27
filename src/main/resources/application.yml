@@ -1,0 +1,56 @@
+server:
+  port: 8080
+  error:
+    include-message: never
+  shutdown: graceful
+
+spring:
+  application:
+    name: noctua-backend
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      # Datas em ISO-8601 ("2026-11-30"), nunca epoch.
+      write-dates-as-timestamps: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/noctua
+    username: noctua
+    password: noctua
+    driver-class-name: org.postgresql.Driver
+  # O esquema e a massa de dados sao criados pelos scripts em
+  # db/init (montados em /docker-entrypoint-initdb.d), nao pelo Spring.
+  sql:
+    init:
+      mode: never
+
+noctua:
+  db:
+    max-pool-size: 10
+    minimum-idle: 2
+    connection-timeout-ms: 10000
+    idle-timeout-ms: 300000
+    max-lifetime-ms: 1200000
+  jwt:
+    # Sobrescreva em producao via NOCTUA_JWT_SECRET (minimo de 32 bytes).
+    secret: "noctua-dev-secret-key-troque-em-producao-0123456789"
+    expiration-minutes: 720
+    issuer: noctua-api
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://localhost:3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.noctua.api: INFO
+    org.springframework.jdbc.core: INFO
