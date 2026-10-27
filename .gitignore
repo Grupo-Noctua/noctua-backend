@@ -1,6 +1,10 @@
-# Gradle cache and build outputs
-.gradle/
-.gradle-cache/
-build/
-bin/
-out/
+/target/
+/.idea/
+*.iml
+.env
+.env.*
+*.env
+!.env.example
+!*.env.example
+/config/*.sql
+*.log

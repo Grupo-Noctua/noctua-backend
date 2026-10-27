@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:8080
+
+### Saúde JDBC
+GET {{baseUrl}}/actuator/health
+
+### Total de funcionários — requer Athena configurado
+GET {{baseUrl}}/api/dashboard/funcionarios/total
+
+### Total de projetos
+GET {{baseUrl}}/api/dashboard/projetos/total
+
+### Ferramentas mais utilizadas — inclui empates
+GET {{baseUrl}}/api/dashboard/ferramentas/mais-utilizada
+
+### Funcionários por tecnologia
+GET {{baseUrl}}/api/dashboard/funcionarios/tecnologia
+
+### Funcionários por senioridade
+GET {{baseUrl}}/api/dashboard/funcionarios/senioridade
+
+### Funcionários por área
+GET {{baseUrl}}/api/dashboard/funcionarios/area
+
+### Projetos por tecnologia
+GET {{baseUrl}}/api/dashboard/projetos/tecnologia
+
+### Projetos com profissionais recomendados
+GET {{baseUrl}}/api/dashboard/projetos

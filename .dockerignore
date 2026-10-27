@@ -1,7 +1,12 @@
+target
 .git
-.gitignore
 .idea
-*.iml
-build/
-.gradle/
+.env
+.env.*
+*.env
+config
+docs
+examples
+requests
 README.md
+database/*.csv

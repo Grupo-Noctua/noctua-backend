@@ -1,0 +1,90 @@
+{
+  "info": {
+    "name": "Noctua — Dashboard",
+    "description": "Importar no Insomnia como coleção Postman v2.1. Configurar baseUrl. Sem autenticação HTTP; credenciais AWS ficam no backend. Roteiro: docs/TESTE_ATHENA_INSOMNIA.md.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": { "type": "noauth" },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Saúde JDBC",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/actuator/health",
+        "description": "Esperado: 200 e status UP. Verifica JDBC, não Athena."
+      }
+    },
+    {
+      "name": "Funcionários — total",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/funcionarios/total",
+        "description": "Comparar total com COUNT(*) FROM gold, considerando todas as partições."
+      }
+    },
+    {
+      "name": "Funcionários — tecnologia",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/funcionarios/tecnologia",
+        "description": "Comparar tecnologia/quantidade com funcionarios-tecnologia.sql. Somente uso igual a 1; opção nenhuma linguagem excluída."
+      }
+    },
+    {
+      "name": "Funcionários — senioridade",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/funcionarios/senioridade",
+        "description": "Comparar senioridade/quantidade com funcionarios-senioridade.sql. Filtro: Júnior, Pleno e Sênior."
+      }
+    },
+    {
+      "name": "Funcionários — área",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/funcionarios/area",
+        "description": "Comparar area/quantidade com funcionarios-area.sql, baseado nos pares de gold.cargo. Conta somente valores 1; null e 0 não contam. A soma não precisa coincidir com o total de funcionários."
+      }
+    },
+    {
+      "name": "Projetos — total",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/projetos/total"
+      }
+    },
+    {
+      "name": "Ferramentas — mais utilizadas",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/ferramentas/mais-utilizada"
+      }
+    },
+    {
+      "name": "Projetos — tecnologia",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/projetos/tecnologia"
+      }
+    },
+    {
+      "name": "Projetos — listagem com recomendações",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/dashboard/projetos"
+      }
+    }
+  ]
+}
